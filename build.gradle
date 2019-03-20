@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'scala'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+group 'se.aftonbladet'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.scala-lang:scala-library:$scalaMajor.$scalaMinor"
+    compile "org.scala-lang:scala-reflect:$scalaMajor.$scalaMinor"
+    compile "org.scala-lang:scala-compiler:$scalaMajor.$scalaMinor"
+
+    compile group: 'org.apache.spark', name: "spark-core_$scalaMajor", version: sparkVersion
+    compile group: 'org.apache.spark', name: "spark-sql_$scalaMajor", version: sparkVersion
+
+}
+
+
+shadowJar { // output in build/libs/
+    append 'reference.conf'
+    dependencies {
+
+    }
+}
+
+
+idea {
+    module {
+        // Let IntelliJ know about the provided JARs
+        scopes.PROVIDED.plus += [ configurations.provided ]
+    }
+}
